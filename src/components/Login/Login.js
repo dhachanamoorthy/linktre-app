@@ -1,27 +1,34 @@
 import { useEffect, useState } from "react";
 import "./Login.scss";
 import {
-  getAuth,
   RecaptchaVerifier,
   signInWithPhoneNumber,
   signInWithPopup,
   GoogleAuthProvider,
   GithubAuthProvider,
   FacebookAuthProvider,
+  onAuthStateChanged
 } from "firebase/auth";
 import { auth } from "../../service/firebase-config";
+import { useHistory } from "react-router-dom";
+import { Button, TextField, InputAdornment, ButtonGroup,Divider } from "@mui/material";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import GoogleIcon from "@mui/icons-material/Google";
+import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
+import PunchClockIcon from '@mui/icons-material/PunchClock';
+import { Box, color } from "@mui/system";
+import { login } from "../Utils/SessionManager";
 export function Login() {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState(null);
-  const [phoneErr, setPhoneErr] = useState(null);
-  const [otpErr, setOtpErr] = useState(null);
+  let history = useHistory();
+
   const checkPhone = (e) => {
     if (!phone) {
-      setPhoneErr("Valid Mobile  Number Required!!");
     } else if (phone.length === 10) {
       onSignInSubmit(e);
     } else {
-      setPhoneErr(null);
+      
     }
   };
 
@@ -39,7 +46,7 @@ export function Login() {
       auth
     );
   };
-  let confirmationResult = null;
+  var confirmationResult = null;
   const onSignInSubmit = async (e) => {
     e.preventDefault();
     const phoneNumber = "+91" + phone;
@@ -54,7 +61,7 @@ export function Login() {
       );
       console.log("confirmation result", confirmationResult);
     } catch (error) {
-      console.log(error);
+      console.log(error.code,error.message);
     }
   };
   //   Sign in with otp
@@ -77,7 +84,11 @@ export function Login() {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
         const user = result.user;
-        console.log(user);
+        login(user,token)
+        if(user){
+            history.push("/home");
+        }
+        
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -95,6 +106,10 @@ export function Login() {
         const credential = GithubAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
         const user = result.user;
+        login(user,token)
+        if(user){
+            history.push("/home");
+        }
         console.log(user);
       })
       .catch((error) => {
@@ -124,43 +139,96 @@ export function Login() {
         console.log(error);
       });
   };
+
+  const errorHandler = (err)=>{
+    
+  }
   return (
     <div className="login">
-      <div className="container">
-        <div className="title">Welcome To LinkTre</div>
-        <hr></hr>
-        <div className="form">
-          <div id="sign-in-button"></div>
-          <div className="form-control">
-            <label>Enter Mobile Number</label>
-            <input
-              type="text"
-              placeholder="Phone Number"
-              value={phone}
+      <div id="sign-in-button"></div>
+      <Box
+        sx={{
+          width: 300,
+          display: "flex",
+          textAlign: "center",
+          alignItems: "center",
+          border: ".5px solid grey",
+          padding: 2,
+        }}
+      >
+        <div>
+          <div className="title">Welcome To LinkTre</div>
+          <hr/>
+          <ButtonGroup
+            variant="filled-basic"
+            aria-label="outlined primary button group"
+            sx={{
+              marginBottom: 2,
+            }}
+          >
+            <TextField
+              id="phone"
+              label="Phone Number"
+              variant="outlined"
               onChange={(e) => setPhone(e.target.value)}
-            ></input>
-            <button onClick={checkPhone}>Send</button>
-            <span className="error" id="auth-id-err">
-              {phoneErr}
-            </span>
-          </div>
-          <div className="form-control">
-            <input
-              type="text"
-              placeholder="OTP"
+              style={{ color: "white" }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PhoneIphoneIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <Button
+              color="secondary"
+              size="large"
+              variant="contained"
+              onClick={checkPhone}
+            >
+              Send
+            </Button>
+          </ButtonGroup>
+          <br />
+          <ButtonGroup
+            variant="contained"
+            aria-label="outlined primary button group"
+            sx={{
+              marginBottom: 2,
+            }}
+          >
+            <TextField
+              id="otp"
+              label="OTP"
+              variant="outlined"
               onChange={(e) => setOtp(e.target.value)}
-            ></input>
-            <button onClick={signInWithOtp}>Verify</button>
-            <span className="error">{otpErr}</span>
-          </div>
-          <div className="form-control">
-            <label style={{ textAlign: "center" }}>or</label>
-            <button onClick={signInWithGoogle}>Google</button>
-            <button onClick={signInWithGithub}>GitHub</button>
-            <button onClick={signInWithFacebook}>Facebook</button>
-          </div>
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PunchClockIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={signInWithOtp}
+            >
+              Verify
+            </Button>
+          </ButtonGroup>
+          <p>or</p>
+          <ButtonGroup>
+            <Button startIcon={<GoogleIcon />} onClick={signInWithGoogle}>
+              Google
+            </Button>
+            <Button startIcon={<GitHubIcon />} onClick={signInWithGithub}>
+              GitHub
+            </Button>
+          </ButtonGroup>
         </div>
-      </div>
+      </Box>
     </div>
   );
 }

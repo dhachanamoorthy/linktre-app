@@ -1,23 +1,31 @@
 import "./App.css";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route,Switch } from "react-router-dom";
+import { ThemeProvider } from "@mui/material";
+import { createTheme } from "@mui/material";
 import { Login } from "./components/Login/Login";
+import { Home } from "./components/Home/Home";
+import PrivateRoute from "./components/Utils/PrivateRoute";
+const theme = createTheme({
+  typography: {
+    fontFamily: [
+      'Montserrat',
+    ].join(','),
+  },});
 function App() {
   return (
-    <div className="App">
+    <ThemeProvider theme={theme}>
+        <div className='App'>
       <Router>
-        <Routes>
-          <Route path="/Login" element={<Login />} />
-          <Route path="/SignUp" element={<SignUp />} />
-          <Route path="/" element={< Login/>} />
-        </Routes>
+        <Switch>
+          <PrivateRoute path="/home" component = {Home}></PrivateRoute>
+          <Route path="/login"><Login/></Route>
+          <Route path="/"><Login/></Route>
+        </Switch>
       </Router>
     </div>
+    </ThemeProvider>
+  
   );
 
-}
-const SignUp = ()=>{
-  return(
-    <h2>Sign Up</h2>
-  )
 }
 export default App;
