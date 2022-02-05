@@ -5,6 +5,7 @@ import { createTheme } from "@mui/material";
 import { Login } from "./components/Login/Login";
 import { Home } from "./components/Home/Home";
 import PrivateRoute from "./components/Utils/PrivateRoute";
+import { Tree } from "./components/Tree/Tree";
 const theme = createTheme({
   typography: {
     fontFamily: [
@@ -18,6 +19,7 @@ function App() {
       <Router>
         <Switch>
           <PrivateRoute path="/home" component = {Home}></PrivateRoute>
+          <PrivateRoute path="/tree" component = {Tree}></PrivateRoute>
           <Route path="/login"><Login/></Route>
           <Route path="/"><Login/></Route>
         </Switch>
