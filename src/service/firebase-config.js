@@ -2,17 +2,15 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCGGihwsSxARI_0tTriF6RdSxscaRW9vg4",
-  authDomain: "auth-service-77ccb.firebaseapp.com",
-  databaseURL:
-    "https://auth-service-77ccb-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "auth-service-77ccb",
-  storageBucket: "auth-service-77ccb.appspot.com",
-  messagingSenderId: "93980911595",
-  appId: "1:93980911595:web:5bac5d4472e6100fc01bae",
-  measurementId: "G-QGB9K4BY01",
+  apiKey: process.env.REACT_APP_API_KEY,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_APP_ID,
+  measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 };
-
+console.log(process.env.REACT_APP_AUTH_DOMAIN);
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 

@@ -17,7 +17,7 @@ import GoogleIcon from "@mui/icons-material/Google";
 import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 import PunchClockIcon from '@mui/icons-material/PunchClock';
 import { Box, color } from "@mui/system";
-import { login } from "../Utils/SessionManager";
+import { login } from "../../service/SessionManager";
 export function Login() {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState(null);
@@ -28,7 +28,7 @@ export function Login() {
     } else if (phone.length === 10) {
       onSignInSubmit(e);
     } else {
-      
+
     }
   };
 
@@ -66,7 +66,7 @@ export function Login() {
   };
   //   Sign in with otp
   const signInWithOtp = async () => {
-    const code = otp;
+    let code = otp;
     try {
       console.log("verify otp", confirmationResult);
       const result = await confirmationResult.confirm(code);
@@ -84,11 +84,11 @@ export function Login() {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
         const user = result.user;
-        login(user,token)
+        login(user,token);
         if(user){
             history.push("/home");
         }
-        
+
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -141,7 +141,7 @@ export function Login() {
   };
 
   const errorHandler = (err)=>{
-    
+
   }
   return (
     <div className="login">

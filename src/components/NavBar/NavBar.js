@@ -12,14 +12,18 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { LinearProgress } from "@mui/material";
-import * as SessionManager from "../Utils/SessionManager";
+import * as SessionManager from "../../service/SessionManager";
 import { useHistory } from "react-router-dom";
 const pages = ["Dashboard", "Trees"];
 const settings = ["Profile", "Account", "Logout"];
 
-export function NavBar() {
+export function NavBar(props) {
+  const [isLoading,setIsLoading] = React.useState(true);
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  React.useEffect(()=>{
+     setIsLoading(props.isLoading)
+  });
   const history = useHistory();
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -163,7 +167,7 @@ export function NavBar() {
           </Box>
         </Toolbar>
       </Container>
-      <LinearProgress />
+      {isLoading && <LinearProgress />}
     </AppBar>
   );
 }
