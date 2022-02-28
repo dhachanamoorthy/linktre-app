@@ -7,7 +7,7 @@ import {
 	GoogleAuthProvider,
 	GithubAuthProvider,
 } from "firebase/auth";
-import { auth } from "../../service/firebase-config";
+import { auth } from "../../service/firebaseConfig";
 import { useHistory } from "react-router-dom";
 import { Button, TextField, InputAdornment, ButtonGroup } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";

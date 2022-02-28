@@ -1,9 +1,8 @@
-import { auth } from "./firebase-config";
+import { auth } from "./firebaseConfig";
 import { createUser } from "./api.js";
+import * as storage from './storage';
+import {USER,AUTH} from '../constants/storage.constants';
 export const login = async (user, token) => {
-	localStorage.setItem("user", user);
-	localStorage.setItem("auth_token", token);
-	console.log(user);
 	let payload = {
 		uuid: user?.uid,
 		username: user?.displayName,
@@ -11,20 +10,22 @@ export const login = async (user, token) => {
 		mobile:user?.phoneNumber,
 		image_url: user?.photoURL,
 	};
-	console.log(payload);
-	let result = await createUser(payload);
-	console.log(result);
+	const result = await createUser(payload);
+	const dbUser  = result.data;
+	
+	storage.setStorage("result",result.data.id);
+	storage.setStorage(AUTH.auth_token, token);
+	storage.setStorage(USER.id,dbUser.id);
+	storage.setStorage(USER.uuid,dbUser.uuid);
 };
 export const isLogin = () => {
-	if (localStorage.getItem("auth_token")) {
+	if (storage.getStorage("auth_token")) {
 		return true;
 	}
-
 	return false;
 };
-
 export const logout = () => {
-	localStorage.removeItem("user");
-	localStorage.removeItem("auth_token");
+	storage.deleteStorage("user");
+	storage.deleteStorage("auth_token");
 	auth.signOut();
 };
