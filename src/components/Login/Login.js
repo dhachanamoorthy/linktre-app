@@ -72,6 +72,9 @@ export function Login() {
 			const result = await confirmationResult.confirm(code);
 			if (result) {
 				console.log(result);
+				console.log(result.user,result._tokenResponse.idToken)
+				login(result.user,result._tokenResponse.idToken);
+				history.push('/home');
 				setAlert(null);
 				setAlert({ message: "Logged In Successfully", severnity: "success" });
 			}
