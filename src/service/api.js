@@ -1,3 +1,5 @@
+import * as storage from "./storage";
+import {USER} from "../constants/storage.constants";
 const axios = require("axios");
 axios.interceptors.request.use((request) => {
 	console.info("Request:", JSON.stringify(request, null, 2));
@@ -9,6 +11,7 @@ axios.interceptors.response.use((response) => {
 	return response;
 });
 const url = process.env.REACT_APP_API_BASE_URL;
+
 export const createUser = async (user) => {
 	console.log(user);
 	let result = await axios.post(url + "/users",user);
@@ -19,5 +22,10 @@ export const getAllTrees = async (user_id) => {
 	let result = await axios.get(url + "/tree/all/" + user_id);
 	return result.data;
 };
+
+export const addTree = async (payload) =>{
+	let result = await axios.post(url + "/tree",payload);
+	return result;
+}
 
 
