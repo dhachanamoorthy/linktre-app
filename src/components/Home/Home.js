@@ -19,21 +19,21 @@ import {
 	Stack,
 	Grid,
 	Fab,
-	Modal
+	Modal,
 } from "@mui/material";
 import { AlertBox } from "../Alert/AlertBox";
-import * as storage from '../../service/storage';
-import {USER} from '../../constants/storage.constants'
+import * as storage from "../../service/storage";
+import { USER } from "../../constants/storage.constants";
 export function Home() {
 	let [trees, setTrees] = useState([]);
 	let [reload, setReload] = useState(false);
 	let [isLoading, setIsLoading] = useState(true);
-	const [alert, setAlert] = useState()
+	const [alert, setAlert] = useState();
 	let history = useHistory();
 	const [treeName, setTreeName] = useState(null);
 	let columns = [
 		{ field: "id", headerName: "ID", width: 20, flex: 1 },
-		{ field: "tree_name", headerName: "Tree Name", flex: 1 },
+		{ field: "tree_name", headerName: "Tree Name", width: 200, flex: 1 },
 		{ field: "created_at", headerName: "Created At", width: 200, flex: 1 },
 		{
 			field: "delete",
@@ -86,10 +86,10 @@ export function Home() {
 			.getAllColumns()
 			.filter((columns) => columns.field !== "__check__" && !!columns)
 			.forEach((c) => (row[c.field] = params.getValue(params.id, c.field)));
-		history.push("/tree");
+		history.push("/tree", { id: row.id });
 	};
 
-	const deleteTree = (e, params) => {
+	const deleteTree = async (e, params) => {
 		e.stopPropagation();
 		const data = params.api;
 		const row = {};
@@ -100,26 +100,31 @@ export function Home() {
 				(columns) =>
 					(row[columns.field] = params.getValue(params.id, columns.field))
 			);
+		setIsLoading(true);
 		console.log(row);
+		let result = await api.deleteTree(row.id);
+		fetchData();
 	};
-	const addTree = async() =>{
+	const addTree = async () => {
 		const user_id = storage.getStorage(USER.id);
 		const payload = {
-			user_id:user_id,
-			tree_name :treeName
-		}
+			user_id: user_id,
+			tree_name: treeName,
+		};
+		setIsLoading(true);
 		console.log(payload);
 		let result = await api.addTree(payload);
-		setReload(reload?false:true);
-		console.log(result);
-	}
+		fetchData();
+	};
+
+	const fetchData = async () => {
+		const user_id = storage.getStorage(USER.id);
+		let data = await api.getAllTrees(user_id);
+		setTrees(data.rows);
+		setIsLoading(false);
+	};
+
 	useEffect(() => {
-		const fetchData = async () => {
-			const user_id = storage.getStorage(USER.id);
-			let data = await api.getAllTrees(user_id);
-			setTrees(data.rows);
-			setIsLoading(false);
-		};
 		fetchData();
 	}, [reload]);
 	return (
@@ -140,25 +145,26 @@ export function Home() {
 							sx={{
 								minWidth: 385,
 								bgcolor: "background.default",
-								
 							}}
 						>
-							<CardHeader sx={{ }} title="New Tree" />
+							<CardHeader sx={{}} title="New Tree" />
 							<CardContent>
 								<FormControl fullWidth sx={{}}>
 									<InputLabel htmlFor="outlined-adornment-amount">
 										Tree Name
 									</InputLabel>
 									<OutlinedInput
-										id="outlined-adornment-amount"
-										value = {treeName}
+										id="outlined-adornment-treename"
+										value={treeName}
 										// onChange={(e)=>{settreeName(e.target.value)}}
 										onChange={(e) => setTreeName(e.target.value)}
-										label="Amount"
+										label="Tree Name"
 									/>
 								</FormControl>
 								<Stack spacing={1} sx={{ mt: 1 }} direction="row">
-									<Button variant="outlined" onClick={addTree}>Add Tree</Button>
+									<Button variant="outlined" onClick={addTree}>
+										Add Tree
+									</Button>
 									<Button variant="outlined" onClick={handleClose}>
 										Close
 									</Button>
@@ -174,6 +180,7 @@ export function Home() {
 						columnBufer={2}
 						textAlign={"center"}
 						autoHeight
+						loading={isLoading}
 						fcolumnThreshold={2}
 						sx={{
 							MuiDataGrid: {
@@ -183,9 +190,9 @@ export function Home() {
 						rowsPerPageOptions={[10]}
 						initialState={{
 							pagination: {
-							  pageSize: 8,
+								pageSize: 8,
 							},
-						  }}
+						}}
 					/>
 				</Grid>
 				<Fab
