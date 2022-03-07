@@ -7,7 +7,7 @@ import {
 	GoogleAuthProvider,
 	GithubAuthProvider,
 } from "firebase/auth";
-import { auth } from "../../service/firebaseConfig";
+import { auth } from "../../service/firebase";
 import { useHistory } from "react-router-dom";
 import { Button, TextField, InputAdornment, ButtonGroup } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
@@ -15,7 +15,7 @@ import GoogleIcon from "@mui/icons-material/Google";
 import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 import PunchClockIcon from "@mui/icons-material/PunchClock";
 import { Box } from "@mui/system";
-import { login } from "../../service/SessionManager";
+import { login } from "../../service/session";
 import { AlertBox } from "../Alert/AlertBox";
 export function Login() {
 	const [phone, setPhone] = useState("");

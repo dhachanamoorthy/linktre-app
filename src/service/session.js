@@ -1,4 +1,4 @@
-import { auth } from "./firebaseConfig";
+import { auth } from "./firebase";
 import { createUser } from "./api.js";
 import * as storage from './storage';
 import {USER,AUTH} from '../constants/storage.constants';

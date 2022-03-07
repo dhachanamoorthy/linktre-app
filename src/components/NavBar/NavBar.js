@@ -12,7 +12,7 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { LinearProgress } from "@mui/material";
-import * as SessionManager from "../../service/SessionManager";
+import * as SessionManager from "../../service/session";
 import { useHistory } from "react-router-dom";
 const pages = ["Dashboard", "Trees"];
 const settings = ["Profile", "Account", "Logout"];
