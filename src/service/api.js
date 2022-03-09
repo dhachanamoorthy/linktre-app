@@ -45,3 +45,12 @@ export const deleteLink = async (link_id) => {
   let result = await axios.delete(url + "/link/" + link_id);
   return result;
 };
+
+export const updateLinkVisibility = async (id, disable) => {
+  let payload = {
+    disabled: disable,
+  };
+  console.log(payload);
+  let result = await axios.patch(url + "/link/" + id, payload);
+  return result;
+};

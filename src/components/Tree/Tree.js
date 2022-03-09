@@ -32,6 +32,7 @@ export function Tree() {
   }, [reload]);
   const fetchData = async () => {
     let result = await api.getAllLinks(treeId);
+    console.log(result.data);
     setLinks(result.data);
     setIsLoading(false);
   };
@@ -103,7 +104,7 @@ export function Tree() {
         spacing={{ xs: 2, md: 3 }}
         columns={{ xs: 1 }}
       >
-        {links &&
+        {links.length>0 ? (
           links.map((ele, index) => {
             return (
               <LinkList
@@ -111,15 +112,14 @@ export function Tree() {
                 id={ele.id}
                 name={ele.link_name}
                 url={ele.link_url}
-                fetchData={this.fetchData}
+                visibility={ele.disabled}
+                onChangeData={fetchData}
               />
             );
-          })}
-        <LinkList
-          id={1}
-          name={"Moorthy"}
-          url={"https://dhcachanamoorthy.github.io"}
-        />
+          })
+        ) : (
+           (<LinkList name="No Links Here" />)
+        )}
       </Grid>
       <Fab
         variant="extended"

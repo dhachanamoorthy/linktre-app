@@ -17,6 +17,7 @@ export const login = async (user, token) => {
   storage.setStorage(AUTH.auth_token, token);
   storage.setStorage(USER.id, dbUser.id);
   storage.setStorage(USER.uuid, dbUser.uuid);
+  return true;
 };
 export const isLogin = () => {
   if (storage.getStorage(AUTH.auth_token)) {
