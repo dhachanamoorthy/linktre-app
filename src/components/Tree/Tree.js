@@ -1,49 +1,49 @@
 import {
-  Divider,
   Grid,
-  ButtonGroup,
   Button,
-  Link,
   Fab,
   Modal,
   FormControl,
-  InputLabel,
-  OutlinedInput,
+  TextField,
   Card,
   CardHeader,
   CardContent,
   Stack,
 } from "@mui/material";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import { NavBar } from "../NavBar/NavBar";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router";
 import * as api from "../../service/api";
+import { LinkList } from "./LinkList";
 export function Tree() {
   const location = useLocation();
-  const [tree_id, setTreeId] = useState(location.state.id);
+  const [isLoading, setIsLoading] = useState(true);
+  const [treeId] = useState(location.state.id);
   const [linkName, setLinkName] = useState(null);
   const [url, setURL] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [link, setLink] = useState(null);
+  const [links, setLinks] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
+  const [reload] = useState(false);
   useEffect(() => {
-    const fetchData = async () => {
-      let data = await api.getAllLinks(tree_id);
-      console.log(data);
-      setIsLoading(false);
-    };
     fetchData();
-  }, []);
+  }, [reload]);
+  const fetchData = async () => {
+    let result = await api.getAllLinks(treeId);
+    setLinks(result.data);
+    setIsLoading(false);
+  };
 
-  const addLink = () => {
-    // let result =
+  const addLink = async () => {
+    let payload = {
+      link_name: linkName,
+      link_url: url,
+      tree_id: treeId,
+    };
+    await api.addLink(payload);
+    fetchData();
   };
   return (
     <div>
@@ -63,28 +63,25 @@ export function Tree() {
               bgcolor: "background.default",
             }}
           >
-            <CardHeader sx={{}} title="New Tree" />
+            <CardHeader sx={{}} title="New Link" />
             <CardContent>
               <FormControl fullWidth>
-                <InputLabel htmlFor="outlined-adornment-treename">
-                  Link Name
-                </InputLabel>
-                <OutlinedInput
-                  id="outlined-adornment-treename"
-                  value={linkName}
-                  // onChange={(e)=>{settreeName(e.target.value)}}
+                <TextField
+                  id="outlined-basic"
+                  label="Link Name"
+                  variant="outlined"
+                  sx={{ marginTop: "10px" }}
                   onChange={(e) => setLinkName(e.target.value)}
-                  label="Tree Name"
                 />
-                <InputLabel htmlFor="outlined-adornment-url">URL</InputLabel>
-                <OutlinedInput 
-                  id="outlined-adornment-url"
-                  value={linkName}
-                  // onChange={(e)=>{settreeName(e.target.value)}}
-                  onChange={(e) => setURL(e.target.value)}
+                <TextField
+                  id="filled-basic"
                   label="URL"
+                  variant="outlined"
+                  sx={{ marginTop: "10px" }}
+                  onChange={(e) => setURL(e.target.value)}
                 />
               </FormControl>
+
               <Stack spacing={1} sx={{ mt: 1 }} direction="row">
                 <Button variant="outlined" onClick={addLink}>
                   Add Link
@@ -106,26 +103,23 @@ export function Tree() {
         spacing={{ xs: 2, md: 3 }}
         columns={{ xs: 1 }}
       >
-        <Grid item m={1} xs={2} sm={4} md={4}>
-          <Grid m={1}>Link Name</Grid>
-          <Grid m={1}>
-            <Link
-              scrollButtons="auto"
-              variant="scrollable"
-              href="https://stackoverflow.com/questions/70332556/call-useeffect-and-re-render-every-time-i-call-the-same-api"
-            >
-              https://stackoverflow.com/questions/70332556/call-useeffect-and-re-render-every-time-i-call-the-same-api
-            </Link>
-          </Grid>
-          <Grid m={1}>
-            <ButtonGroup mt={1}>
-              <Button startIcon={<VisibilityIcon />}>Hide</Button>
-              <Button startIcon={<DeleteIcon />}>Delete</Button>
-              <Button startIcon={<EditIcon />}>Edit</Button>
-            </ButtonGroup>
-          </Grid>
-          <Divider variant="middle" component="li" />
-        </Grid>
+        {links &&
+          links.map((ele, index) => {
+            return (
+              <LinkList
+                key={ele.id}
+                id={ele.id}
+                name={ele.link_name}
+                url={ele.link_url}
+                fetchData={this.fetchData}
+              />
+            );
+          })}
+        <LinkList
+          id={1}
+          name={"Moorthy"}
+          url={"https://dhcachanamoorthy.github.io"}
+        />
       </Grid>
       <Fab
         variant="extended"
