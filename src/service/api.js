@@ -50,7 +50,6 @@ export const updateLinkVisibility = async (id, disable) => {
   let payload = {
     disabled: disable,
   };
-  console.log(payload);
   let result = await axios.patch(url + "/link/" + id, payload);
   return result;
 };
