@@ -73,8 +73,9 @@ export function Login() {
 			if (result) {
 				console.log(result);
 				console.log(result.user,result._tokenResponse.idToken)
-				login(result.user,result._tokenResponse.idToken);
-				history.push('/home');
+				login(result.user,result._tokenResponse.idToken).then(()=>{
+					history.push('/home');
+				})
 				setAlert(null);
 				setAlert({ message: "Logged In Successfully", severnity: "success" });
 			}
@@ -92,10 +93,9 @@ export function Login() {
 				const credential = GoogleAuthProvider.credentialFromResult(result);
 				const token = credential.accessToken;
 				const user = result.user;
-				login(user, token);
-				if (user) {
-					history.push("/home");
-				}
+				login(user, token).then(()=>{
+					history.push('/home');
+				})
 			})
 			.catch((error) => {
 				// const errorCode = error.code;
@@ -116,10 +116,9 @@ export function Login() {
 				const credential = GithubAuthProvider.credentialFromResult(result);
 				const token = credential.accessToken;
 				const user = result.user;
-				login(user, token);
-				if (user) {
-					history.push("/home");
-				}
+				login(user, token).then(()=>{
+					history.push('/home');
+				})
 				console.log(user);
 			})
 			.catch((error) => {
