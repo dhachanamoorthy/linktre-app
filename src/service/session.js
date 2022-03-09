@@ -15,8 +15,8 @@ export const login = async (user, token) => {
   console.log(dbUser);
   storage.setStorage("result", result.data.id);
   storage.setStorage(AUTH.auth_token, token);
-  storage.setStorage(USER.id, dbUser[0].id);
-  storage.setStorage(USER.uuid, dbUser[0].uuid);
+  storage.setStorage(USER.id, dbUser.id);
+  storage.setStorage(USER.uuid, dbUser.uuid);
 };
 export const isLogin = () => {
   if (storage.getStorage(AUTH.auth_token)) {
