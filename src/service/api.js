@@ -1,3 +1,5 @@
+import { async } from "@firebase/util";
+
 const axios = require("axios");
 axios.interceptors.request.use((request) => {
   // console.info("Request:", JSON.stringify(request, null, 2));
@@ -53,3 +55,8 @@ export const updateLinkVisibility = async (id, disable) => {
   let result = await axios.patch(url + "/link/" + id, payload);
   return result;
 };
+
+export const updateLink = async(id,payload)=>{
+  let result = await axios.patch(url+"/link/"+id,payload);
+  return result;
+}
