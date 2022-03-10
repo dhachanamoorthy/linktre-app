@@ -12,7 +12,7 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { LinearProgress } from "@mui/material";
-import * as SessionManager from "../../service/session";
+import * as session from "../../service/session";
 import { useHistory } from "react-router-dom";
 const pages = ["Dashboard", "Trees"];
 const settings = ["Profile", "Account", "Logout"];
@@ -43,11 +43,12 @@ export function NavBar(props) {
   const handleSettingsRequest = (e) => {
     switch (e) {
       case "Profile":
+        redirectPage("profile")
         break;
       case "Account":
         break;
       case "Logout":
-        SessionManager.logout();
+        session.logout();
         togglePage();
         break;
         default:
@@ -133,7 +134,7 @@ export function NavBar(props) {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="" src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu
