@@ -1,5 +1,3 @@
-import { async } from "@firebase/util";
-
 const axios = require("axios");
 axios.interceptors.request.use((request) => {
   // console.info("Request:", JSON.stringify(request, null, 2));
@@ -35,17 +33,18 @@ export const deleteTree = async (tree_id) => {
 
 export const getAllLinks = async (tree_id) => {
   let result = await axios.get(url + "/link/all/" + tree_id);
-  return result;
+  console.log(result.data);
+  return result.data;
 };
 
 export const addLink = async (payload) => {
   let result = await axios.post(url + "/link", payload);
-  return result;
+  return result.data;
 };
 
 export const deleteLink = async (link_id) => {
   let result = await axios.delete(url + "/link/" + link_id);
-  return result;
+  return result.data;
 };
 
 export const updateLinkVisibility = async (id, disable) => {
@@ -53,10 +52,10 @@ export const updateLinkVisibility = async (id, disable) => {
     disabled: disable,
   };
   let result = await axios.patch(url + "/link/" + id, payload);
-  return result;
+  return result.data;
 };
 
-export const updateLink = async(id,payload)=>{
-  let result = await axios.patch(url+"/link/"+id,payload);
-  return result;
-}
+export const updateLink = async (id, payload) => {
+  let result = await axios.patch(url + "/link/" + id, payload);
+  return result.data;
+};

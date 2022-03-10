@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { NavBar } from "../NavBar/NavBar";
+import { AlertBox } from "../Alert/AlertBox";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router";
 import * as api from "../../service/api";
@@ -26,6 +27,7 @@ export function Tree() {
   const [modalOpen, setModalOpen] = useState(false);
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
+  const [alert, setAlert] = useState(null);
   const [reload] = useState(false);
   useEffect(() => {
     fetchData();
@@ -43,12 +45,20 @@ export function Tree() {
       link_url: url,
       tree_id: treeId,
     };
-    await api.addLink(payload);
+    let result = await api.addLink(payload);
     fetchData();
+    handleClose();
+    handleAlert(result, "success");
+  };
+
+  const handleAlert = (result, type) => {
+    setAlert(null);
+    setAlert({ message: result.msg, severnity: type });
   };
   return (
     <div>
       <NavBar isLoading={isLoading} />
+      {alert && <AlertBox message={alert} />}
       <Modal open={modalOpen} onClose={handleClose}>
         <Grid
           container
@@ -104,7 +114,7 @@ export function Tree() {
         spacing={{ xs: 2, md: 3 }}
         columns={{ xs: 1 }}
       >
-        {links.length>0 ? (
+        {links.length > 0 ? (
           links.map((ele, index) => {
             return (
               <LinkList
@@ -114,11 +124,12 @@ export function Tree() {
                 url={ele.link_url}
                 visibility={ele.disabled}
                 onChangeData={fetchData}
+                alertData={handleAlert}
               />
             );
           })
         ) : (
-           (<LinkList name="No Links Here" />)
+          <LinkList name="No Links Here" />
         )}
       </Grid>
       <Fab
