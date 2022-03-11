@@ -89,7 +89,8 @@ export function Profile(props) {
                 fullWidth
                 label="Phone Number"
                 name="phone"
-                disabled={user?.mobile}
+                disabled={user.mobile ? true : false}
+                defaultValue={user?.mobile}
                 variant="outlined"
               />
             </Grid>
