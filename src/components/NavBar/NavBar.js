@@ -16,8 +16,8 @@ import * as session from "../../service/session";
 import { useHistory } from "react-router-dom";
 import * as storage from "../../service/storage";
 import { STORAGE } from "../../constants/storage.constants";
-const pages = ["Home", "Trees"];
-const settings = ["Profile", "Account", "Logout"];
+const pages = ["Home"];
+const settings = ["Profile", "Logout"];
 
 export function NavBar(props) {
   const [user] = useState(
@@ -136,7 +136,7 @@ export function NavBar(props) {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                onClick={()=>{handleCloseNavMenu();redirectPage(page);}}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
                 {page}
@@ -145,9 +145,9 @@ export function NavBar(props) {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            <Tooltip title={user?.username}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt={user.username} src={user.id} />
+                <Avatar alt={user.username} src={user.image_url} />
               </IconButton>
             </Tooltip>
             <Menu

@@ -17,15 +17,15 @@ import * as storage from "../../service/storage";
 import * as api from "../../service/api";
 import { STORAGE } from "../../constants/storage.constants";
 export function Profile(props) {
-  const [user, setUser] = useState(storage.getStorage(STORAGE.USER));
-  const [isLoading, setIsLoading] = useState(true)
-
-  const  handleChange =()=>{
-
-  }
+  const [user, setUser] = useState(
+    JSON.parse(storage.getStorage(STORAGE.USER))
+  );
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const handleChange = () => {};
   return (
     <Grid>
-      <NavBar isLoading={isLoading}/>
+      <NavBar isLoading={isLoading} />
       <Card>
         <CardContent>
           <Box
@@ -56,7 +56,10 @@ export function Profile(props) {
         </CardActions>
       </Card>
       <Card>
-        <CardHeader subheader="These valuable informations are protected" title="Profile" />
+        <CardHeader
+          subheader="These valuable informations are protected"
+          title="Profile"
+        />
         <Divider />
         <CardContent>
           <Grid container spacing={3}>
@@ -76,7 +79,7 @@ export function Profile(props) {
                 fullWidth
                 label="Email Address"
                 name="email"
-                disabled={user.email?true:false}
+                disabled={user.email ? true : false}
                 defaultValue={user?.email}
                 variant="outlined"
               />
