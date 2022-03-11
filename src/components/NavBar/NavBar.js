@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -12,17 +12,22 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { LinearProgress } from "@mui/material";
-import * as SessionManager from "../../service/session";
+import * as session from "../../service/session";
 import { useHistory } from "react-router-dom";
-const pages = ["Dashboard", "Trees"];
-const settings = ["Profile", "Account", "Logout"];
+import * as storage from "../../service/storage";
+import { STORAGE } from "../../constants/storage.constants";
+const pages = ["Home"];
+const settings = ["Profile", "Logout"];
 
 export function NavBar(props) {
-  const [isLoading,setIsLoading] = React.useState(true);
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
-  React.useEffect(()=>{
-     setIsLoading(props.isLoading)
+  const [user] = useState(
+    JSON.parse(storage.getStorage(STORAGE.USER))
+  );
+  const [isLoading, setIsLoading] = useState(true);
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
+  useEffect(() => {
+    setIsLoading(props.isLoading);
   });
   const history = useHistory();
   const handleOpenNavMenu = (event) => {
@@ -43,22 +48,25 @@ export function NavBar(props) {
   const handleSettingsRequest = (e) => {
     switch (e) {
       case "Profile":
+        redirectPage("profile");
         break;
-      case "Account":
+      case "Home":
+        redirectPage("home");
         break;
       case "Logout":
-        SessionManager.logout();
+        session.logout();
         togglePage();
         break;
-        default:
-            break;
+      default:
+        break;
     }
   };
   function togglePage() {
     history.push("/");
   }
-  function redirectPage(path){
-    history.push("/"+path);
+  function redirectPage(path) {
+    console.log(path);
+    history.push("/" + path);
   }
 
   return (
@@ -104,7 +112,13 @@ export function NavBar(props) {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page}  onClick={()=>{handleCloseNavMenu();redirectPage(page)}}>
+                <MenuItem
+                  key={page}
+                  onClick={() => {
+                    handleCloseNavMenu();
+                    redirectPage(page);
+                  }}
+                >
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
@@ -122,7 +136,7 @@ export function NavBar(props) {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                onClick={()=>{handleCloseNavMenu();redirectPage(page);}}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
                 {page}
@@ -131,9 +145,9 @@ export function NavBar(props) {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            <Tooltip title={user?.username}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt={user.username} src={user.image_url} />
               </IconButton>
             </Tooltip>
             <Menu

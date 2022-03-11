@@ -23,11 +23,12 @@ import {
 } from "@mui/material";
 import { AlertBox } from "../Alert/AlertBox";
 import * as storage from "../../service/storage";
-import { USER } from "../../constants/storage.constants";
+import { STORAGE } from "../../constants/storage.constants";
 export function Home() {
 	let [trees, setTrees] = useState([]);
 	let [reload, setReload] = useState(false);
 	let [isLoading, setIsLoading] = useState(true);
+	const [user, setUser] = useState(JSON.parse(storage.getStorage(STORAGE.USER)));
 	const [alert, setAlert] = useState();
 	let history = useHistory();
 	const [treeName, setTreeName] = useState(null);
@@ -86,7 +87,7 @@ export function Home() {
 			.getAllColumns()
 			.filter((columns) => columns.field !== "__check__" && !!columns)
 			.forEach((c) => (row[c.field] = params.getValue(params.id, c.field)));
-		history.push("/tree", { id: row.id });
+		history.push("/trees", { id: row.id });
 	};
 
 	const deleteTree = async (e, params) => {
@@ -106,7 +107,7 @@ export function Home() {
 		fetchData();
 	};
 	const addTree = async () => {
-		const user_id = storage.getStorage(USER.id);
+		const user_id = user.id;
 		const payload = {
 			user_id: user_id,
 			tree_name: treeName,
@@ -116,9 +117,8 @@ export function Home() {
 		let result = await api.addTree(payload);
 		fetchData();
 	};
-
 	const fetchData = async () => {
-		const user_id = storage.getStorage(USER.id);
+		const user_id = user.id;
 		let data = await api.getAllTrees(user_id);
 		setTrees(data.rows);
 		setIsLoading(false);

@@ -59,3 +59,8 @@ export const updateLink = async (id, payload) => {
   let result = await axios.patch(url + "/link/" + id, payload);
   return result.data;
 };
+
+export const getUser = async (id)=>{
+  let result = await axios.get(url+"/users/"+id);
+  return result;
+}
