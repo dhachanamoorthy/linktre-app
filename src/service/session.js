@@ -1,7 +1,7 @@
 import { auth } from "./firebase";
 import { createUser } from "./api.js";
 import * as storage from "./storage";
-import { USER, AUTH } from "../constants/storage.constants";
+import { STORAGE } from "../constants/storage.constants";
 export const login = async (user, token) => {
   let payload = {
     uuid: user?.uid,
@@ -12,15 +12,12 @@ export const login = async (user, token) => {
   };
   const result = await createUser(payload);
   const dbUser = result.data;
-  console.log(dbUser);
-  storage.setStorage("result", result.data.id);
-  storage.setStorage(AUTH.auth_token, token);
-  storage.setStorage(USER.id, dbUser.id);
-  storage.setStorage(USER.uuid, dbUser.uuid);
+  storage.setStorage(STORAGE.AUTH, token);
+  storage.setStorage(STORAGE.USER, JSON.stringify(dbUser));
   return true;
 };
 export const isLogin = () => {
-  if (storage.getStorage(AUTH.auth_token)) {
+  if (storage.getStorage(STORAGE.AUTH)) {
     return true;
   }
   return false;

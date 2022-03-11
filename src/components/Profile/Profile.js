@@ -12,30 +12,16 @@ import {
   Typography,
 } from "@mui/material";
 import { NavBar } from "../NavBar/NavBar";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import * as storage from "../../service/storage";
 import * as api from "../../service/api";
-import { USER } from "../../constants/storage.constants";
+import { STORAGE } from "../../constants/storage.constants";
 export function Profile(props) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(storage.getStorage(STORAGE.USER));
   const [isLoading, setIsLoading] = useState(true)
 
   const  handleChange =()=>{
 
-  }
-  const fetchData = async () => {
-    const userId = storage.getStorage(USER.id);
-    const result = await api.getUser(userId);
-    console.log(result);
-    console.log(result.data)
-    setUser(result.data);
-    setIsLoading(false);
-  };
-  useEffect(() => {
-    fetchData();
-  }, []);
-  if(isLoading){
-    return null;
   }
   return (
     <Grid>
