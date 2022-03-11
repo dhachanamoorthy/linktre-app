@@ -20,7 +20,7 @@ export function Profile(props) {
   const [user, setUser] = useState(
     JSON.parse(storage.getStorage(STORAGE.USER))
   );
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   
   const handleChange = () => {};
   return (
