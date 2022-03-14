@@ -1,3 +1,4 @@
+import { useEffect, useState, useRef } from "react";
 import {
   Grid,
   Avatar,
@@ -11,21 +12,119 @@ import {
   Divider,
   Typography,
 } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
+
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+
 import { NavBar } from "../NavBar/NavBar";
-import { useState } from "react";
-import * as storage from "../../service/storage";
+import { AlertBox } from "../Alert/AlertBox";
+import {
+  setStorage,
+  getStorage as getLocalStorage,
+} from "../../service/storage";
 import * as api from "../../service/api";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
 import { STORAGE } from "../../constants/storage.constants";
-export function Profile(props) {
-  const [user, setUser] = useState(
-    JSON.parse(storage.getStorage(STORAGE.USER))
-  );
+export function Profile() {
+  const user = JSON.parse(getLocalStorage(STORAGE.USER));
   const [isLoading, setIsLoading] = useState(false);
-  
-  const handleChange = () => {};
+  const [btnDisabled, setBtnDisabled] = useState(true);
+  const [alert, setAlert] = useState(null);
+  const [newUser, setNewUser] = useState(user);
+  const [isImageUploading, setisImageUploading] = useState(false);
+  let imageEle = useRef(null);
+  const handleNameChange = (name) => {
+    setNewUser((prevState) => {
+      return { ...prevState, ...{ username: name } };
+    });
+  };
+  const handleEmailChange = (email) => {
+    setNewUser((prevState) => {
+      return { ...prevState, ...{ email: email } };
+    });
+  };
+  const handleMobileChange = (mobile) => {
+    setNewUser((prevState) => {
+      return { ...prevState, ...{ mobile: mobile } };
+    });
+  };
+  const validateEmail = (email) => {
+    var emailRegex =
+      /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    return emailRegex.test(email);
+  };
+  const validatePhone = (phone) => {
+    var phoneRegex = /^\d{10}$/;
+    return phoneRegex.test(phone);
+  };
+  const updateUser = async () => {
+    const result = await api.updateUser(newUser);
+  };
+  const selectImage = () => {
+    imageEle.current.click();
+  };
+  const uploadImage = (e) => {
+    setisImageUploading(true);
+    const fileName = new Date().toISOString() + "-" + user.uuid;
+    const storage = getStorage();
+    const storageRef = ref(storage, "profile_pic/" + fileName);
+    const task = uploadBytesResumable(storageRef, e.target.files[0]);
+    task.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log("Upload is " + progress + "% done");
+      },
+      (error) => {
+        console.log(error.message);
+      },
+      () => {
+        getDownloadURL(task.snapshot.ref).then(async (url) => {
+          console.log("File available at", url);
+          user.image_url = url;
+          console.log(user);
+          await updateUser(user);
+          setStorage(STORAGE.USER, JSON.stringify(user));
+          setAlert({
+            message: "Profile Pictured Uploaded",
+            type: "success",
+          });
+          setAlert(null);
+          setisImageUploading(false);
+        });
+      }
+    );
+  };
+  useEffect(() => {
+    if (
+      (user.username !== newUser?.username ||
+        user.mobile !== newUser?.mobile ||
+        user.email !== newUser?.email) &&
+      validatePhone(newUser?.mobile) &&
+      validateEmail(newUser?.email)
+    ) {
+      setBtnDisabled(false);
+    } else {
+      setBtnDisabled(true);
+    }
+  }, [newUser]);
   return (
     <Grid>
       <NavBar isLoading={isLoading} />
+      <input
+        type="file"
+        id="image"
+        ref={imageEle}
+        onChange={uploadImage}
+        style={{ display: "none" }}
+      />
+      {alert && <AlertBox message={alert} />}
       <Card>
         <CardContent>
           <Box
@@ -50,9 +149,17 @@ export function Profile(props) {
         </CardContent>
         <Divider />
         <CardActions>
-          <Button color="primary" fullWidth variant="text">
-            Upload picture
-          </Button>
+          <LoadingButton
+            size="small"
+            onClick={selectImage}
+            fullWidth
+            endIcon={<CloudUploadIcon />}
+            loading={isImageUploading}
+            loadingPosition="end"
+            variant="contained"
+          >
+            Upload Picture
+          </LoadingButton>
         </CardActions>
       </Card>
       <Card>
@@ -69,8 +176,8 @@ export function Profile(props) {
                 helperText="*username"
                 label="Username"
                 name="firstName"
-                onChange={handleChange}
-                value={user.username}
+                onChange={(e) => handleNameChange(e.target.value)}
+                defaultValue={user?.username}
                 variant="outlined"
               />
             </Grid>
@@ -80,6 +187,9 @@ export function Profile(props) {
                 label="Email Address"
                 name="email"
                 disabled={user.email ? true : false}
+                onChange={(e) => {
+                  handleEmailChange(e.target.value);
+                }}
                 defaultValue={user?.email}
                 variant="outlined"
               />
@@ -90,6 +200,7 @@ export function Profile(props) {
                 label="Phone Number"
                 name="phone"
                 disabled={user.mobile ? true : false}
+                onChange={(e) => handleMobileChange(e.target.value)}
                 defaultValue={user?.mobile}
                 variant="outlined"
               />
@@ -104,7 +215,12 @@ export function Profile(props) {
             p: 2,
           }}
         >
-          <Button color="primary" variant="contained" disabled>
+          <Button
+            color="primary"
+            variant="contained"
+            disabled={btnDisabled}
+            onClick={updateUser}
+          >
             Save details
           </Button>
         </Box>
