@@ -1,11 +1,11 @@
 const axios = require("axios");
 axios.interceptors.request.use((request) => {
-  // console.info("Request:", JSON.stringify(request, null, 2));
+  console.info("Request:", JSON.stringify(request, null, 2));
   return request;
 });
 
 axios.interceptors.response.use((response) => {
-  // console.info("Response:", JSON.stringify(response, null, 2));
+  console.info("Response:", JSON.stringify(response, null, 2));
   return response;
 });
 const url = process.env.REACT_APP_API_BASE_URL;
@@ -62,5 +62,12 @@ export const updateLink = async (id, payload) => {
 
 export const getUser = async (id)=>{
   let result = await axios.get(url+"/users/"+id);
+  return result;
+}
+
+export const updateUser = async (payload)=>{
+  const id = payload.id;
+  console.log(payload);
+  let result = await axios.patch(url+"/users/"+id,payload);
   return result;
 }
