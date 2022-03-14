@@ -31,7 +31,7 @@ import {
 } from "firebase/storage";
 import { STORAGE } from "../../constants/storage.constants";
 export function Profile() {
-  const user = JSON.parse(getLocalStorage(STORAGE.USER));
+  let user = JSON.parse(getLocalStorage(STORAGE.USER));
   const [isLoading, setIsLoading] = useState(false);
   const [btnDisabled, setBtnDisabled] = useState(true);
   const [alert, setAlert] = useState(null);
@@ -59,11 +59,13 @@ export function Profile() {
     return emailRegex.test(email);
   };
   const validatePhone = (phone) => {
-    var phoneRegex = /^\d{10}$/;
+    var phoneRegex = /^\d{10} || {12}$/;
     return phoneRegex.test(phone);
   };
   const updateUser = async () => {
     const result = await api.updateUser(newUser);
+    user = newUser;
+    setStorage(STORAGE.USER,JSON.stringify(newUser));
   };
   const selectImage = () => {
     imageEle.current.click();

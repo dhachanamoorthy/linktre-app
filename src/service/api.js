@@ -13,7 +13,7 @@ const url = process.env.REACT_APP_API_BASE_URL;
 export const createUser = async (user) => {
   console.log(user);
   let result = await axios.post(url + "/users", user);
-  return result;
+  return result.data;
 };
 
 export const getAllTrees = async (user_id) => {
