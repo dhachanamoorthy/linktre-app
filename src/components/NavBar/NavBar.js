@@ -65,7 +65,6 @@ export function NavBar(props) {
     history.push("/");
   }
   function redirectPage(path) {
-    console.log(path);
     history.push("/" + path);
   }
 

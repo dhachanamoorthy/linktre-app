@@ -13,7 +13,7 @@ const url = process.env.REACT_APP_API_BASE_URL;
 export const createUser = async (user) => {
   console.log(user);
   let result = await axios.post(url + "/users", user);
-  return result;
+  return result.data;
 };
 
 export const getAllTrees = async (user_id) => {
@@ -62,5 +62,12 @@ export const updateLink = async (id, payload) => {
 
 export const getUser = async (id)=>{
   let result = await axios.get(url+"/users/"+id);
+  return result;
+}
+
+export const updateUser = async (payload)=>{
+  const id = payload.id;
+  console.log(payload);
+  let result = await axios.patch(url+"/users/"+id,payload);
   return result;
 }
