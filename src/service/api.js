@@ -60,14 +60,20 @@ export const updateLink = async (id, payload) => {
   return result.data;
 };
 
-export const getUser = async (id)=>{
-  let result = await axios.get(url+"/users/"+id);
+export const getUser = async (id) => {
+  let result = await axios.get(url + "/users/" + id);
   return result;
-}
+};
 
-export const updateUser = async (payload)=>{
+export const updateUser = async (payload) => {
   const id = payload.id;
-  console.log(payload);
-  let result = await axios.patch(url+"/users/"+id,payload);
+  let result = await axios.patch(url + "/users/" + id, payload);
   return result;
-}
+};
+
+export const getTreeByName = async (treeName) => {
+  let result = await axios.get(url + "/tree", {
+    params: { tree_name: treeName },
+  });
+  return result.data;
+};
