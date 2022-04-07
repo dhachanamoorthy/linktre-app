@@ -11,6 +11,7 @@ import {
   FormControl,
   Stack,
   CardContent,
+  Tooltip,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
@@ -37,9 +38,9 @@ export function LinkList(props) {
     }
   };
 
-  const updateLinkVisibility = async (id, disabled) => {
-    setVisibility(visibility ? false : true);
-    let result = await api.updateLinkVisibility(id, disabled);
+  const updateLinkVisibility = async (id) => {
+    setVisibility(!visibility);
+    let result = await api.updateLinkVisibility(id, !visibility);
     if (result.status === 200) {
       props.alertData(result, "success");
     }
@@ -122,14 +123,19 @@ export function LinkList(props) {
       </Grid>
       <Grid m={1}>
         <ButtonGroup mt={1}>
-          <Button
-            startIcon={visibility ? <VisibilityIcon /> : <VisibilityOffIcon />}
-            onClick={() => {
-              updateLinkVisibility(props.id, visibility);
-            }}
-          >
-            Hide
-          </Button>
+          <Tooltip title={visibility ? "unhide" : "hide"}>
+            <Button
+              startIcon={
+                visibility ? <VisibilityIcon /> : <VisibilityOffIcon />
+              }
+              onClick={() => {
+                console.log(props.id + "-" + visibility);
+                updateLinkVisibility(props.id);
+              }}
+            >
+              Hide
+            </Button>
+          </Tooltip>
           <Button
             startIcon={<DeleteIcon />}
             id={props.id}

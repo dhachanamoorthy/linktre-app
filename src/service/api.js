@@ -91,7 +91,13 @@ export const getUser = async (id) => {
 
 export const updateUser = async (payload) => {
   const id = payload.id;
-  console.log(payload);
   let result = await axios.patch(url + "/users/" + id, payload);
   return result;
+};
+
+export const getTreeByName = async (treeName) => {
+  let result = await axios.get(url + "/tree", {
+    params: { tree_name: treeName },
+  });
+  return result.data;
 };
