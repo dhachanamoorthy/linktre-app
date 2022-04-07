@@ -120,9 +120,10 @@ export function Home() {
     fetchData();
   };
   const fetchData = async () => {
-    const user_id = user.id;
-    let data = await api.getAllTrees(user_id);
-    setTrees(data.rows);
+    const userId = user.id;
+    let result = await api.getAllTrees(userId);
+    let trees = result.data.trees;
+    setTrees(trees);
     setIsLoading(false);
   };
 
