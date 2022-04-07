@@ -1,10 +1,10 @@
-import { getStorage } from "./storage";
+import { getStorage, setStorage } from "./storage";
 import { STORAGE } from "../constants/storage.constants";
+import { getAuthToken } from "./firebase";
 const axios = require("axios");
 const url = process.env.REACT_APP_API_BASE_URL;
-axios.interceptors.request.use((request) => {
-  // console.info("Request:", JSON.stringify(request, null, 2));
-  const accessToken = getStorage(STORAGE.AUTH);
+axios.interceptors.request.use(async (request) => {
+  let accessToken = getStorage(STORAGE.AUTH);
   request.headers = {
     Authorization: `Bearer ${accessToken}`,
     Accept: "application/json",
@@ -16,14 +16,20 @@ axios.interceptors.response.use(
   (response) => {
     return response;
   },
-  async function (error) {
+  async function (error, response) {
+    console.log("error - ", JSON.stringify(error));
     const originalRequest = error.config;
-    const accessToken = getStorage(STORAGE.AUTH);
-    if (error.response.status === 403 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      // const access_token = await refreshAccessToken();
-      axios.defaults.headers.common["Authorization"] = "Bearer " + accessToken;
-      return axios(originalRequest);
+    if (error) {
+      const user = JSON.parse(getStorage(STORAGE.FIRE_USER));
+      if (error.status === 401 && !originalRequest?._retry) {
+        originalRequest._retry = false;
+        const accessToken = await getAuthToken(user);
+        setStorage(STORAGE.AUTH, accessToken);
+        axios.defaults.headers.common["Authorization"] =
+          "Bearer " + accessToken;
+        return axios(originalRequest);
+      }
+      return response;
     }
   }
 );
