@@ -7,3 +7,7 @@ export function getStorage(key) {
 export function deleteStorage(key) {
   return localStorage.removeItem(key);
 }
+
+export function clear() {
+  return localStorage.clear();
+}

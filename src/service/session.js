@@ -10,9 +10,10 @@ export const login = async (user, token) => {
     mobile: user?.phoneNumber,
     image_url: user?.photoURL,
   };
+  storage.setStorage(STORAGE.FIRE_USER, JSON.stringify(user));
+  storage.setStorage(STORAGE.AUTH, token);
   const result = await createUser(payload);
   const dbUser = result.data;
-  storage.setStorage(STORAGE.AUTH, token);
   storage.setStorage(STORAGE.USER, JSON.stringify(dbUser));
   return true;
 };
@@ -23,7 +24,6 @@ export const isLogin = () => {
   return false;
 };
 export const logout = () => {
-  storage.deleteStorage("user");
-  storage.deleteStorage("auth_token");
+  storage.clear();
   auth.signOut();
 };
