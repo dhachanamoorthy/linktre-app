@@ -40,8 +40,8 @@ export const createUser = async (user) => {
   return result.data;
 };
 
-export const getAllTrees = async (user_id) => {
-  let result = await axios.get(url + "/tree/all/" + user_id);
+export const getAllTrees = async (userId) => {
+  let result = await axios.get(url + `/users/${userId}/trees/`);
   return result.data;
 };
 
@@ -55,9 +55,8 @@ export const deleteTree = async (tree_id) => {
   return result;
 };
 
-export const getAllLinks = async (tree_id) => {
-  let result = await axios.get(url + "/link/all/" + tree_id);
-  console.log(result.data);
+export const getAllLinks = async (treeId) => {
+  let result = await axios.get(url + `/tree/${treeId}/links`);
   return result.data;
 };
 
