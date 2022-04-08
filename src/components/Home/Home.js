@@ -122,9 +122,10 @@ export function Home() {
   const fetchData = async () => {
     const userId = user.id;
     let result = await api.getAllTrees(userId);
-    let trees = result.data.trees;
+    let trees = result ? result.data.trees : [];
     setTrees(trees);
     setIsLoading(false);
+    handleClose();
   };
 
   const checkTreeName = async () => {

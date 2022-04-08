@@ -29,7 +29,7 @@ axios.interceptors.response.use(
           "Bearer " + accessToken;
         return axios(originalRequest);
       }
-      return response;
+      return error;
     }
   }
 );
@@ -42,6 +42,9 @@ export const createUser = async (user) => {
 
 export const getAllTrees = async (userId) => {
   let result = await axios.get(url + `/users/${userId}/trees/`);
+  if(result.status!==200){
+    return null;
+  }
   return result.data;
 };
 
