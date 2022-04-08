@@ -35,7 +35,7 @@ export function Tree() {
   const fetchData = async () => {
     let result = await api.getAllLinks(treeId);
    let data = result.data;
-    let links =data ? data.links :null;
+    let links =data ? data.links :[];
     setLinks(links);
     setIsLoading(false);
   };

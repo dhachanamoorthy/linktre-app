@@ -5,6 +5,7 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
+import ShareRoundedIcon from "@mui/icons-material/ShareRounded";
 import { DataGrid } from "@mui/x-data-grid";
 import * as api from "../../service/api";
 import { useHistory } from "react-router-dom";
@@ -37,7 +38,7 @@ export function Home() {
   let columns = [
     { field: "id", headerName: "ID", width: 20, flex: 1 },
     { field: "tree_name", headerName: "Tree Name", width: 200, flex: 1 },
-    { field: "created_at", headerName: "Created At", width: 200, flex: 1 },
+    // { field: "created_at", headerName: "Created At", width: 200, flex: 1 },
     {
       field: "delete",
       headerName: "Delete",
@@ -65,12 +66,31 @@ export function Home() {
       renderCell: (params) => {
         return (
           <IconButton
-            aria-label="delete"
+            aria-label="edit"
             onClick={(event) => {
               editTree(event, params);
             }}
           >
             <EditIcon />
+          </IconButton>
+        );
+      },
+      flex: 1,
+    },
+    {
+      field: "share",
+      headerName: "Share",
+      width: 20,
+      sortable: false,
+      renderCell: (params) => {
+        return (
+          <IconButton
+            aria-label="share"
+            onClick={(event) => {
+              shareTree(event, params);
+            }}
+          >
+            <ShareRoundedIcon />
           </IconButton>
         );
       },
@@ -108,6 +128,24 @@ export function Home() {
     let result = await api.deleteTree(row.id);
     fetchData();
   };
+
+  const shareTree = (e, params) => {
+    e.stopPropagation();
+    const data = params.api;
+    const row = {};
+    data
+      .getAllColumns()
+      .filter((columns) => columns.field !== "__check__" && !!columns)
+      .forEach((c) => (row[c.field] = params.getValue(params.id, c.field)));
+    const treeName = row.tree_name;
+    console.log(treeName);
+    const shareLink = process.env.REACT_APP_CLIENT_URL + treeName;
+    navigator.clipboard.writeText(shareLink).then(() => {
+      setAlert(null);
+      setAlert({ message: "link copied to clipboard", severnity: "success" });
+    });
+  };
+
   const addTree = async () => {
     const user_id = user.id;
     const payload = {
