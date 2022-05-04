@@ -68,3 +68,16 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+### .env
+```
+REACT_APP_API_BASE_URL=/* Base API url */
+REACT_APP_API_KEY= /* API KEY */
+REACT_APP_AUTH_DOMAIN=/* APP DOMAIN */
+REACT_APP_PROJECT_ID= /* PROJECT ID */
+REACT_APP_STORAGE_BUCKET= /* STORAGE BUCKET */
+REACT_APP_MESSAGING_SENDER_ID=/* SENDER ID */
+REACT_APP_APP_ID=/* APP ID */
+REACT_APP_MEASUREMENT_ID=/* MEASUREMENT */
+```
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
